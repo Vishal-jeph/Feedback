@@ -2,3 +2,7 @@ streamlit
 pandas
 matplotlib
 wordcloud
+gspread
+google-auth
+streamlit-autorefresh
+
