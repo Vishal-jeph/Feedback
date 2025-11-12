@@ -80,8 +80,8 @@ def generate_wordcloud():
 st.markdown("<div class='title'>💬 Feedback Dashboard(It's anonymous)</div>", unsafe_allow_html=True)
 st.markdown("""
     <div class='subtitle'>
-        As the course is end now I want you all to please
-        Share your thoughts and help us improve! 🌟  
+        As this course is ending now I want you all to please
+        share your thoughts and help us improve! 🌟  
         Every feedback you give shapes the experience for everyone.
     </div>
 """, unsafe_allow_html=True)
@@ -126,3 +126,4 @@ if not feedbacks.empty:
     st.markdown("</div>", unsafe_allow_html=True)
 else:
     st.info("No feedbacks yet!")
+
