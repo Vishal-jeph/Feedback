@@ -23,8 +23,8 @@ st.markdown("""
     .title {text-align:center; font-size:38px; font-weight:800; color:#0ea5a4; margin-bottom:6px;}
     .subtitle {text-align:center; color:#64748b; margin-bottom:18px;}
     .section {background:white; padding:18px; border-radius:12px; box-shadow:0 6px 18px rgba(2,6,23,0.06); margin-top:18px;}
-    .chat-box {background:#6d8dad; border-radius:12px; padding:12px; max-height:420px; overflow-y:auto;}
-    .feedback-msg {background:#e5e7eb; padding:10px; border-radius:8px; margin:8px 0;}
+    .chat-box {background:#f9fafb; border-radius:12px; padding:12px; max-height:420px; overflow-y:auto;}
+    .feedback-msg {background:#8291b0; padding:10px; border-radius:8px; margin:8px 0;}
     .stButton>button {border-radius:10px; background-color:#0ea5a4; color:white; font-weight:700;}
 </style>
 """, unsafe_allow_html=True)
@@ -160,5 +160,6 @@ st.markdown("</div>", unsafe_allow_html=True)
 
 # footer
 st.caption("Data stored in Google Sheets. If you update the sheet externally, the app will refresh automatically every few seconds.")
+
 
 
