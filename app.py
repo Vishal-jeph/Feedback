@@ -1,6 +1,8 @@
 # app.py
 import streamlit as st
 import pandas as pd
+import datetime
+from streamlit.runtime.caching import cache_data
 import matplotlib.pyplot as plt
 from wordcloud import WordCloud
 from streamlit_autorefresh import st_autorefresh
@@ -15,7 +17,7 @@ from datetime import datetime
 st.set_page_config(page_title="Course Feedback (Google Sheets)", layout="centered")
 
 # Auto-refresh every 6 seconds so multiple users see updates live
-st_autorefresh(interval=6_000, limit=None, key="autorefresh")
+st_autorefresh(interval=10_000, limit=None, key="autorefresh")
 
 # CSS
 st.markdown("""
@@ -67,24 +69,24 @@ def get_worksheet():
     worksheet = sh.sheet1
     return worksheet
 
+@cache_data(ttl=30)  # Cache for 30 seconds to reduce Google API calls
 def read_feedbacks_from_sheet() -> pd.DataFrame:
     """
     Read all feedback rows from the sheet and return a DataFrame with columns ['timestamp','rating','comment'].
-    If the sheet is empty / only headers, returns empty DataFrame.
+    Cached for 30 seconds to prevent hitting Google Sheets rate limits.
     """
     ws = get_worksheet()
     all_values = ws.get_all_values()
     if not all_values or len(all_values) <= 1:
         return pd.DataFrame(columns=["timestamp", "rating", "comment"])
     df = pd.DataFrame(all_values[1:], columns=all_values[0])
-    # Normalize columns if someone changed order
     expected = ["timestamp", "rating", "comment"]
     for col in expected:
         if col not in df.columns:
             df[col] = ""
-    # Convert rating column to numeric if possible
     df["rating"] = pd.to_numeric(df["rating"], errors="coerce").fillna(0).astype(int)
     return df[expected]
+
 
 def append_feedback_to_sheet(rating: int, comment: str):
     """
@@ -107,8 +109,10 @@ st.markdown("### ☁️ Live WordCloud")
 try:
     df_all = read_feedbacks_from_sheet()
 except Exception as e:
-    st.exception(e)
-    st.stop()
+    st.warning("⚠️ Temporary issue fetching feedbacks. Showing last cached data.")
+    st.write(e)
+    df_all = pd.DataFrame(columns=["timestamp", "rating", "comment"])
+
 
 if df_all.shape[0] == 0 or df_all["comment"].str.strip().replace("", pd.NA).dropna().empty:
     st.info("No comments yet. WordCloud will appear after the first comment.")
@@ -167,6 +171,7 @@ else:
         st.markdown(f"<div class='feedback-msg'><b>⭐ {rating}/5</b> — <i>{ts}</i><br>{st.session_state.get('highlight', '')}{comment}</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
