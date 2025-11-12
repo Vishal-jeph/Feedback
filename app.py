@@ -124,21 +124,31 @@ st.markdown("</div>", unsafe_allow_html=True)
 # Feedback form
 st.markdown("<div class='section'>", unsafe_allow_html=True)
 st.markdown("### ✍️ Submit Feedback")
+# Initialize feedback flag once
+if "feedback_submitted" not in st.session_state:
+    st.session_state.feedback_submitted = False
+
 with st.form("feedback_form", clear_on_submit=True):
     rating = st.slider("Rating (1 = Poor, 5 = Excellent)", 1, 5, 5)
     comment = st.text_area("Comments (please be constructive)", height=140)
     submitted = st.form_submit_button("Submit")
+
     if submitted:
         if not comment.strip():
             st.warning("Please enter a short comment before submitting.")
         else:
             try:
                 append_feedback_to_sheet(rating, comment.strip())
-                st.success("Thank you! Your feedback was saved ✅")
-                # No need to call st.rerun(); the st_autorefresh will pick it up soon.
+                st.session_state.feedback_submitted = True
             except Exception as e:
                 st.error("Failed to save feedback. See error message below.")
                 st.exception(e)
+
+# Show confirmation message if feedback was submitted
+if st.session_state.feedback_submitted:
+    st.success("Thank you! Your feedback was saved ✅")
+    st.session_state.feedback_submitted = False  # Reset flag
+
 st.markdown("</div>", unsafe_allow_html=True)
 
 # Recent feedbacks (chat style)
@@ -157,6 +167,7 @@ else:
         st.markdown(f"<div class='feedback-msg'><b>⭐ {rating}/5</b> — <i>{ts}</i><br>{st.session_state.get('highlight', '')}{comment}</div>", unsafe_allow_html=True)
     st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("</div>", unsafe_allow_html=True)
+
 
 
 
