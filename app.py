@@ -158,8 +158,8 @@ else:
     st.markdown("</div>", unsafe_allow_html=True)
 st.markdown("</div>", unsafe_allow_html=True)
 
-# footer
-st.caption("Data stored in Google Sheets. If you update the sheet externally, the app will refresh automatically every few seconds.")
+
+
 
 
 
